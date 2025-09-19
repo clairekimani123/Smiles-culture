@@ -1,20 +1,21 @@
-import axios from "axios";
+import axios from 'axios'
 
-// Create axios instance with base URL and JWT support
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://127.0.0.1:8000/'
+
 const api = axios.create({
-  baseURL: "http://127.0.0.1:8000/api/", // Django backend API base
+  baseURL: API_BASE + 'api/',
   headers: {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
   },
-});
+})
 
-// Automatically add JWT token if available
+// Attach access token from localStorage
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem('access_token') || localStorage.getItem('access')
   if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+    config.headers.Authorization = `Bearer ${token}`
   }
-  return config;
-});
+  return config
+})
 
-export default api;
+export default api

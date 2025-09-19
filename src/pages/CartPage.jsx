@@ -1,99 +1,69 @@
-import React, { useState } from "react";
-import { useCart } from "../context/CartContext";
-import api from "../utils/axios";
+import React, { useState } from 'react'
+import { useCart } from '../context/CartContext'
+import api from '../utils/axios'
 
-const CartPage = () => {
-  const { cartItems = [], removeFromCart } = useCart();
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
+export default function CartPage(){
+  const { cartItems, removeFromCart, clearCart, getCartTotal } = useCart()
+  const [loading, setLoading] = useState(false)
+  const [message, setMessage] = useState('')
 
-  const total = cartItems.reduce(
-    (sum, item) => sum + (item.price || 0) * (item.quantity || 1),
-    0
-  );
+  const total = getCartTotal()
+  const phone = localStorage.getItem('phone')
 
   const handleCheckout = async () => {
-    setLoading(true);
-    setMessage("");
-
+    if (!phone) { setMessage('Please set your phone in profile or login'); return }
+    setLoading(true); setMessage('')
     try {
-      const phone = localStorage.getItem("phone");
-      await api.post("/create-payment/", {
-        phone,
-        amount: total,
-      });
-
-      setMessage("✅ STK Push sent. Please check your phone.");
+      const res = await api.post('create-payment/', { phone, amount: total })
+      if (res.data.success) {
+        setMessage('STK push sent. Check your phone for the prompt.')
+        clearCart()
+      } else {
+        setMessage(res.data.message || 'Payment initiation failed')
+      }
     } catch (err) {
-      console.error(err);
-      setMessage("❌ Checkout failed. Try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
+      console.error(err)
+      setMessage(err.response?.data || 'Checkout failed. Try again.')
+    } finally { setLoading(false) }
+  }
 
   return (
-    <div className="p-8">
-      <h2 className="text-2xl font-bold mb-6">Your Cart</h2>
+    <div className="container mx-auto px-4 py-8">
+      <h2 className="text-3xl font-bold text-brand mb-6">Your Cart</h2>
 
-      {cartItems.length === 0 ? (
-        <p className="text-gray-600">🛒 Your cart is empty.</p>
-      ) : (
+      {cartItems.length === 0 ? <p>Your cart is empty.</p> : (
         <>
-          {/* Cart Items Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            {cartItems.map((item) => (
-              <div
-                key={item.id}
-                className="bg-white shadow-md rounded-lg p-4 flex flex-col"
-              >
-                {/* Product Image */}
-                <img
-                  src={item.image || "/placeholder.png"} // fallback if image missing
-                  alt={item.name}
-                  className="h-40 w-full object-cover rounded-md mb-4"
-                />
-
-                {/* Product Details */}
-                <h3 className="text-lg font-semibold mb-2">{item.name}</h3>
-                <p className="text-gray-600 mb-2">
-                  Quantity: <span className="font-medium">{item.quantity}</span>
-                </p>
-                <p className="text-purple-700 font-bold mb-4">
-                  KES {item.price * item.quantity}
-                </p>
-
-                {/* Remove Button */}
-                <button
-                  onClick={() => removeFromCart(item.id)}
-                  className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 mt-auto"
-                >
-                  Remove
-                </button>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+            {cartItems.map(it => (
+              <div key={it.productId} className="bg-white rounded shadow p-4 flex flex-col">
+                <img src={it.image} alt={it.name} className="h-48 w-full object-cover rounded mb-4"/>
+                <h3 className="font-semibold">{it.name}</h3>
+                <p className="text-gray-600">Quantity: {it.quantity}</p>
+                <p className="font-bold text-brand mt-2">KES {(it.price * it.quantity).toFixed(2)}</p>
+                <div className="mt-auto flex gap-2">
+                  <button onClick={()=>removeFromCart(it.productId)} className="px-3 py-1 bg-red-500 text-white rounded">Remove</button>
+                </div>
               </div>
             ))}
           </div>
 
-          {/* Total + Checkout */}
-          <div className="flex justify-between items-center bg-gray-100 p-4 rounded-lg shadow">
-            <h3 className="text-xl font-semibold">
-              Total: <span className="text-purple-700">KES {total}</span>
-            </h3>
-            <button
-              onClick={handleCheckout}
-              disabled={loading}
-              className="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700"
-            >
-              {loading ? "Processing..." : "Checkout"}
-            </button>
+          <div className="flex justify-between items-center bg-white p-4 rounded shadow">
+            <div>
+              <div className="text-lg">Total</div>
+              <div className="text-2xl font-bold text-brand">KES {total.toFixed(2)}</div>
+            </div>
+
+            <div className="flex gap-4">
+              <button onClick={clearCart} className="px-4 py-2 border rounded">Clear</button>
+              <button onClick={handleCheckout} disabled={loading} className="px-6 py-2 rounded bg-brand text-white">
+                {loading ? 'Processing...' : 'Checkout (M-Pesa)'}
+              </button>
+            </div>
           </div>
 
-          {/* Status Message */}
-          {message && <p className="mt-4 text-center">{message}</p>}
+          {message && <p className="mt-4 text-center">{String(message)}</p>}
         </>
       )}
     </div>
-  );
-};
-
-export default CartPage;
+  )
+}

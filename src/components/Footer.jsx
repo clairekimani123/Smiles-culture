@@ -1,13 +1,20 @@
-import React from "react";
+import React from 'react'
 
-const Footer = () => {
+export default function Footer(){
   return (
-    <footer className="bg-[#A656A6] text-white py-6 mt-12">
-      <div className="max-w-6xl mx-auto text-center text-sm">
-        <p>&copy; {new Date().getFullYear()} ReactShop. All rights reserved.</p>
+    <footer className="bg-white border-t mt-12">
+      <div className="container mx-auto px-4 py-8 text-sm text-gray-600">
+        <div className="flex justify-between">
+          <div>
+            <p className="font-semibold">Smiles Culture</p>
+            <p>© {new Date().getFullYear()} Smiles Culture</p>
+          </div>
+          <div>
+            <p>Contact</p>
+            <p className="mt-1">Call, Text or WhatsApp: <a href="tel:+254719217121" className="text-brand">+254 719 217 121</a></p>
+          </div>
+        </div>
       </div>
     </footer>
-  );
-};
-
-export default Footer;
+  )
+}

@@ -1,47 +1,33 @@
-import React, { useEffect, useState } from "react";
-import ProductCard from "../components/ProductCard";
-import { useCart } from "../context/CartContext";
+import React, { useEffect, useState } from 'react'
+import ProductCard from '../components/ProductCard'
+import { useCart } from '../context/CartContext'
+import api from '../utils/axios'
+import { useSearchParams } from 'react-router-dom'
 
-const ProductListPage = () => {
-  const [products, setProducts] = useState([]);
-  const { addToCart } = useCart();
+export default function ProductListPage(){
+  const [products, setProducts] = useState([])
+  const { addToCart } = useCart()
+  const [q] = useSearchParams()
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/products/")
-      .then((res) => res.json())
-      .then((data) => {
-        const normalized = data.map((p) => ({
-          ...p,
-          image_url: p.image_url || p.image || "https://via.placeholder.com/300",
-          price: typeof p.price === "string" ? parseFloat(p.price) : p.price,
-        }));
-        setProducts(normalized);
-      })
-      .catch((err) => console.error("Error fetching products:", err));
-  }, []);
+    const fetchProducts = async () => {
+      try {
+        const res = await api.get('products/')
+        setProducts(res.data)
+      } catch (err) { console.error(err) }
+    }
+    fetchProducts()
+  }, [])
+
+  const cat = q.get('cat')
+  const filtered = cat ? products.filter(p => (p.category || '').toLowerCase() === cat.toLowerCase()) : products
 
   return (
-    <div className="bg-purple-50 min-h-screen py-12">
-      <div className="container mx-auto px-4">
-        <h1 className="text-3xl font-bold mb-8 text-center text-[#A656A6]">
-          Explore Our Collection
-        </h1>
-        {products.length === 0 ? (
-          <p className="text-center text-gray-500">No products available.</p>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {products.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                onAddToCart={() => addToCart({ ...product, quantity: 1 })}
-              />
-            ))}
-          </div>
-        )}
+    <div className="container mx-auto px-4 py-8">
+      <h2 className="text-3xl font-bold text-center text-brand mb-8">Explore Products</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {filtered.map(p => <ProductCard key={p.id} product={p} onAdd={addToCart} />)}
       </div>
     </div>
-  );
-};
-
-export default ProductListPage;
+  )
+}

@@ -1,16 +1,8 @@
-// src/components/ProtectedRoute.jsx
-import React from "react";
-import { Navigate } from "react-router-dom";
+import React from 'react'
+import { Navigate } from 'react-router-dom'
 
-const ProtectedRoute = ({ children }) => {
-  const token = localStorage.getItem("access_token");
-
-  if (!token) {
-    // if no token, redirect to login
-    return <Navigate to="/login" replace />;
-  }
-
-  return children;
-};
-
-export default ProtectedRoute;
+export default function ProtectedRoute({ children }) {
+  const token = localStorage.getItem('access_token') || localStorage.getItem('access')
+  if (!token) return <Navigate to="/login" replace />
+  return children
+}

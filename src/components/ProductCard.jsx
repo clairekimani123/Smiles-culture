@@ -1,26 +1,29 @@
-import React from "react";
+import React from 'react'
 
-const ProductCard = ({ product, onAddToCart }) => {
+export default function ProductCard({ product, onAdd }) {
   return (
-    <div className="bg-white  border-t-4 border-[#A656A6] rounded-xl shadow-sm hover:shadow-lg transition duration-300">
-      <img
-        src={product.image_url || "https://via.placeholder.com/150"}
-        alt={product.name}
-        className="w-full h-52 object-cover rounded-t-xl"
+    <div className="bg-white rounded shadow p-4 flex flex-col">
+      <img 
+        src={product.image} 
+        alt={product.name} 
+        className="h-48 w-full object-cover rounded mb-4"
       />
-      <div className="p-4">
-        <h2 className="text-lg font-semibold mb-1">{product.name}</h2>
-        <p className="text-[#A656A6] font-bold mb-2">${parseFloat(product.price).toFixed(2)}</p>
-        <p className="text-sm text-gray-500 mb-4 line-clamp-2">{product.description}</p>
-        <button
-          onClick={() => onAddToCart(product)}
-          className="w-full bg-[#A656A6] hover:bg-[#823C82] text-white font-semibold py-2 rounded-lg transition"
-        >
-          Add to Cart
-        </button>
-      </div>
+      <h3 className="font-semibold">{product.name}</h3>
+      <p className="text-gray-600">{product.description}</p>
+      <p className="font-bold text-brand mt-2">KES {product.price}</p>
+      
+      <button 
+        onClick={() => onAdd({
+          productId: product.id,
+          name: product.name,
+          price: product.price,
+          image: product.image,
+          quantity: 1
+        })}
+        className="mt-auto px-4 py-2 rounded bg-brand text-white"
+      >
+        Add to Cart
+      </button>
     </div>
-  );
-};
-
-export default ProductCard;
+  )
+}
