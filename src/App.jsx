@@ -6,9 +6,10 @@ import Home from './pages/Home'
 import ProductListPage from './pages/ProductListPage'
 import ProductDetailPage from './pages/ProductDetailPage'
 import CartPage from './pages/CartPage'
-import LoginPage from './pages/LoginPage'
+import CheckoutPage from './pages/CheckoutPage'
+// import LoginPage from './pages/LoginPage'
 import { CartProvider } from './context/CartContext'
-import ProtectedRoute from './components/ProtectedRoute'
+
 
 export default function App(){
   return (
@@ -20,8 +21,8 @@ export default function App(){
             <Route path="/" element={<Home />} />
             <Route path="/products" element={<ProductListPage />} />
             <Route path="/products/:id" element={<ProductDetailPage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/cart" element={<ProtectedRoute><CartPage /></ProtectedRoute>} />
+            <Route path="/cart" element={<CartPage />} />
+            <Route path="/checkout" element={<CheckoutPage />} />
           </Routes>
         </main>
         <Footer />

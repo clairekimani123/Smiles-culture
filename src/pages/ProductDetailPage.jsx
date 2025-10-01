@@ -17,7 +17,8 @@ export default function ProductDetailPage(){
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="grid md:grid-cols-2 gap-8">
-        <img src={product.image || product.image_url || '/placeholder.png'} alt={product.name} className="w-full rounded shadow"/>
+        <img src={product.image_url || '/placeholder.png'} alt={product.name} className="w-full rounded shadow"/>
+
         <div>
           <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
           <p className="text-brand text-2xl font-bold mb-4">KES {Number(product.price).toFixed(2)}</p>

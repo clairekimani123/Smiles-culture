@@ -2,11 +2,11 @@ import React from 'react'
 
 export default function Footer(){
   return (
-    <footer className="bg-white border-t mt-12">
-      <div className="container mx-auto px-4 py-8 text-sm text-gray-600">
+    <footer className="bg-black border-t mt-12">
+      <div className="container mx-auto px-40 py-20 text-sm sm:text-base lg:text-lg font-weight-bold text-green-600">
         <div className="flex justify-between">
           <div>
-            <p className="font-semibold">Smiles Culture</p>
+            <p className="font-weight-semibold">Smiles Culture</p>
             <p>© {new Date().getFullYear()} Smiles Culture</p>
           </div>
           <div>

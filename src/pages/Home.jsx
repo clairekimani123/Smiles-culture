@@ -1,34 +1,38 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React from "react";
+import { Link } from "react-router-dom";
 
-export default function Home(){
+const Home = () => {
   return (
-    <div className="min-h-[60vh] bg-gradient-to-b from-white to-[#f7eff8]">
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-          <div>
-            <h1 className="text-4xl font-bold text-brand mb-4">Smiles Culture — Shop the Movement</h1>
-            <p className="mb-6 text-gray-700">Quality tees, hoodies and more — crafted for confidence.</p>
-            <div className="flex gap-4">
-              <Link to="/products?cat=women" className="px-6 py-3 bg-brand text-white rounded">Shop Women</Link>
-              <Link to="/products?cat=men" className="px-6 py-3 border border-brand text-brand rounded">Shop Men</Link>
-            </div>
-          </div>
-          <div>
-            <img src="/hero.jpg" alt="hero" className="w-full rounded shadow-lg" />
-          </div>
-        </div>
+    <div className="bg-purple-50 min-h-screen">
+      {/* Hero Section */}
+      <section className="text-center py-20 bg-gradient-to-r from-[#A656A6] to-[#823C82] text-white">
+        <h1 className="text-5xl font-bold mb-4">Welcome to Smile's Culture Shop</h1>
+        <p className="text-lg mb-6">
+          Discover amazing products, shop securely, and enjoy fast delivery.
+        </p>
+        <Link
+          to="/products"
+          className="px-8 py-3 bg-white text-[#A656A6] font-semibold rounded-full shadow hover:bg-gray-100 transition"
+        >
+          Shop Now
+        </Link>
+      </section>
 
-        {/* quick category cards */}
-        <div className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-6">
-          {['Women','Men','Unisex'].map(cat => (
-            <Link key={cat} to={`/products?cat=${cat.toLowerCase()}`} className="bg-white p-6 rounded shadow hover:shadow-lg transition">
-              <div className="text-lg font-semibold mb-2">{cat}</div>
-              <p className="text-gray-500">Hand-picked collection.</p>
-            </Link>
-          ))}
-        </div>
-      </div>
+      {/* Features */}
+      <section className="grid md:grid-cols-3 gap-6 px-6 py-12 max-w-6xl mx-auto">
+        {[
+          { title: "Wide Selection", desc: "Browse through a variety of high-quality products tailored for you." },
+          { title: "Secure Payment", desc: "Pay easily with MPesa STK push and enjoy peace of mind." },
+          { title: "Fast Delivery", desc: "Get your orders delivered quickly and safely to your doorstep." }
+        ].map((f, i) => (
+          <div key={i} className="bg-white p-6 rounded-xl shadow hover:shadow-lg transition border-t-4 border-[#A656A6]">
+            <h3 className="font-bold text-lg mb-2">{f.title}</h3>
+            <p className="text-gray-600">{f.desc}</p>
+          </div>
+        ))}
+      </section>
     </div>
-  )
-}
+  );
+};
+
+export default Home;
