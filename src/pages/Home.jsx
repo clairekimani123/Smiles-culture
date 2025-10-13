@@ -6,7 +6,7 @@ const Home = () => {
     <div className="bg-purple-50 min-h-screen">
       {/* Hero Section */}
       <section className="text-center py-20 bg-gradient-to-r from-[#A656A6] to-[#823C82] text-white">
-        <h1 className="text-5xl font-bold mb-4">Welcome to Smile's Culture Shop</h1>
+        <h1 className="text-5xl font-bold font-serif mb-4">Welcome to Smiles Culture Shop</h1>
         <p className="text-lg mb-6">
           Discover amazing products, shop securely, and enjoy fast delivery.
         </p>

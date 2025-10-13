@@ -12,7 +12,11 @@ export default function CheckoutPage() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      const res = await api.post('cart/checkout/', { ...form, items: cartItems })
+     const res = await api.post('checkout/', { 
+  ...form, 
+  amount: total,   // 👈 Add total
+  items: cartItems 
+})
       alert('Order placed successfully!')
       clearCart()
     } catch (err) {
@@ -22,8 +26,8 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h2 className="text-3xl font-bold mb-6">Checkout</h2>
+    <div className="w-full max-w-screen-lg mx-auto px-4 py-8">
+      <h2 className="text-3xl font-bold font-serif mb-6">Checkout</h2>
       <form onSubmit={handleSubmit} className="space-y-4 max-w-lg">
         <input type="text" name="name" placeholder="Your Name" required
           value={form.name} onChange={handleChange}
@@ -40,7 +44,7 @@ export default function CheckoutPage() {
         </select>
         <p className="font-bold text-lg">Total: KES {total}</p>
         <button type="submit" className="w-full py-3 bg-[#A656A6] text-white rounded-lg hover:bg-[#823C82] transition">
-          Confirm & Pay
+          Submit
         </button>
       </form>
     </div>
