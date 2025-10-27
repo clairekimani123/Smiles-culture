@@ -24,11 +24,15 @@ export default function CheckoutPage() {
 
   return (
     <div className="w-full max-w-2xl mx-auto px-6 py-10">
-      <h2 className="text-3xl font-bold font-serif text-center mb-8 text-[#A656A6]">Checkout</h2>
+      <h2 className="text-3xl font-bold font-serif text-center mb-8 text-[#A656A6]">
+        Checkout
+      </h2>
+
       <form
         onSubmit={handleSubmit}
-        className="space-y-5 bg-white shadow-lg rounded-xl p-8 border border-purple-200"
+        className="space-y-6 bg-white shadow-lg rounded-xl p-8 border border-purple-200"
       >
+        {/* Full Name */}
         <div>
           <label className="block text-gray-700 mb-2 font-semibold">Full Name</label>
           <input
@@ -42,6 +46,7 @@ export default function CheckoutPage() {
           />
         </div>
 
+        {/* Phone */}
         <div>
           <label className="block text-gray-700 mb-2 font-semibold">Phone Number</label>
           <input
@@ -55,6 +60,7 @@ export default function CheckoutPage() {
           />
         </div>
 
+        {/* Area */}
         <div>
           <label className="block text-gray-700 mb-2 font-semibold">Area / Location</label>
           <input
@@ -68,6 +74,7 @@ export default function CheckoutPage() {
           />
         </div>
 
+        {/* Payment Method */}
         <div>
           <label className="block text-gray-700 mb-2 font-semibold">Payment Method</label>
           <select
@@ -76,26 +83,34 @@ export default function CheckoutPage() {
             onChange={handleChange}
             className="w-full border-2 border-purple-300 rounded-lg p-3 focus:outline-none focus:border-[#A656A6] transition bg-white"
           >
-            <option value="mpesa">
-              M-Pesa
-            </option>
-            <option value="card">
-              Card
-            </option>
-            <option value="paypal">
-              PayPal
-            </option>
+            <option value="mpesa">M-Pesa</option>
+            <option value="card">Card</option>
+            <option value="paypal">PayPal</option>
           </select>
 
-          <div className="flex items-center gap-4 mt-2 text-2xl text-[#A656A6]">
-            <FaMobileAlt title="M-Pesa" />
-            <FaCreditCard title="Card" />
-            <FaCcPaypal title="PayPal" />
+          {/* Payment Icons */}
+          <div className="flex justify-center items-center gap-10 mt-4 text-[#A656A6]">
+            <div className="flex flex-col items-center">
+              <FaMobileAlt size={40} />
+              <span className="text-sm mt-1 font-medium">M-Pesa</span>
+            </div>
+            <div className="flex flex-col items-center">
+              <FaCreditCard size={40} />
+              <span className="text-sm mt-1 font-medium">Card</span>
+            </div>
+            <div className="flex flex-col items-center">
+              <FaCcPaypal size={40} />
+              <span className="text-sm mt-1 font-medium">PayPal</span>
+            </div>
           </div>
         </div>
 
-        <p className="font-bold text-lg text-gray-700">Total: <span className="text-[#A656A6]">KES {total}</span></p>
+        {/* Total */}
+        <p className="font-bold text-lg text-gray-700 text-center">
+          Total: <span className="text-[#A656A6]">KES {total}</span>
+        </p>
 
+        {/* Submit */}
         <button
           type="submit"
           className="w-full py-3 bg-[#A656A6] text-white rounded-lg font-semibold hover:bg-[#823C82] transition"
