@@ -2,7 +2,7 @@ import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { FaShoppingCart } from 'react-icons/fa'
 import { useCart } from '../context/CartContext'
-import logo from '../assets/smiles-culture-logo.svg'  // make sure to place it in /src/assets/
+import logo from '../assets/smiles.png'  // make sure to place it in /src/assets/
 
 export default function Navbar() {
   const { cartItems } = useCart()
