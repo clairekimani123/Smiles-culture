@@ -16,7 +16,7 @@ export default function Navbar() {
         <div className="flex items-center gap-3">
           <img 
             src={logo} 
-            alt="Smiles Culture Logo" 
+            alt="Smiles logo" 
             className="w-14 h-14 sm:w-16 sm:h-16 rounded-md bg-white p-1 shadow"
           />
           <Link to="/" className="text-2xl sm:text-3xl font-bold font-serif text-white hover:text-gray-200 transition">
