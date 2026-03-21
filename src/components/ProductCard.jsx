@@ -12,7 +12,7 @@ export default function ProductCard({ product, onAdd }) {
       productId: product.id,
       name: product.name,
       price: product.price,
-      image: product.image,
+      image: product.image_url,   // ← was product.image, now product.image_url
       quantity,
     })
     setQuantity(1)
@@ -21,7 +21,7 @@ export default function ProductCard({ product, onAdd }) {
   return (
     <div className="bg-white rounded-xl shadow-md p-4 flex flex-col transform hover:scale-105 hover:shadow-lg transition duration-100">
       <img
-        src={product.image}
+        src={product.image_url}          // ← was product.image, now product.image_url
         alt={product.name}
         className="h-150 w-full object-cover rounded mb-4"
       />
