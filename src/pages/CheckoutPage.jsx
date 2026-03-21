@@ -1,24 +1,38 @@
 import React, { useState } from 'react'
 import { useCart } from '../context/CartContext'
+import { useNavigate } from 'react-router-dom'
 import api from '../utils/axios'
 import { FaCcPaypal, FaCreditCard, FaMobileAlt } from 'react-icons/fa'
 
 export default function CheckoutPage() {
   const { cartItems, clearCart } = useCart()
+  const navigate = useNavigate()
   const [form, setForm] = useState({ name: '', phone: '', area: '', payment: 'mpesa' })
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
   const total = cartItems.reduce((s, i) => s + i.price * i.quantity, 0)
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value })
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    setLoading(true)
+    setError('')
+
     try {
       await api.post('checkout/', { ...form, amount: total, items: cartItems })
-      alert('Order placed successfully!')
+
+      // ✅ Clear the cart
       clearCart()
+
+      // ✅ Navigate to home with a success message via state
+      navigate('/', { state: { orderSuccess: true } })
+
     } catch (err) {
       console.error(err)
-      alert('Checkout failed')
+      setError('Checkout failed. Please check your details and try again.')
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -52,7 +66,7 @@ export default function CheckoutPage() {
           <input
             type="text"
             name="phone"
-            placeholder="Enter phone number"
+            placeholder="e.g. 2547XXXXXXXX"
             required
             value={form.phone}
             onChange={handleChange}
@@ -90,15 +104,15 @@ export default function CheckoutPage() {
 
           {/* Payment Icons */}
           <div className="flex justify-center items-center gap-10 mt-4 text-[#A656A6]">
-            <div className="flex flex-col items-center">
+            <div className={`flex flex-col items-center transition ${form.payment === 'mpesa' ? 'opacity-100 scale-110' : 'opacity-40'}`}>
               <FaMobileAlt size={40} />
               <span className="text-sm mt-1 font-medium">M-Pesa</span>
             </div>
-            <div className="flex flex-col items-center">
+            <div className={`flex flex-col items-center transition ${form.payment === 'card' ? 'opacity-100 scale-110' : 'opacity-40'}`}>
               <FaCreditCard size={40} />
               <span className="text-sm mt-1 font-medium">Card</span>
             </div>
-            <div className="flex flex-col items-center">
+            <div className={`flex flex-col items-center transition ${form.payment === 'paypal' ? 'opacity-100 scale-110' : 'opacity-40'}`}>
               <FaCcPaypal size={40} />
               <span className="text-sm mt-1 font-medium">PayPal</span>
             </div>
@@ -107,15 +121,23 @@ export default function CheckoutPage() {
 
         {/* Total */}
         <p className="font-bold text-lg text-gray-700 text-center">
-          Total: <span className="text-[#A656A6]">KES {total}</span>
+          Total: <span className="text-[#A656A6]">KES {total.toFixed(2)}</span>
         </p>
+
+        {/* Error message */}
+        {error && (
+          <p className="text-red-600 text-center text-sm font-medium">{error}</p>
+        )}
 
         {/* Submit */}
         <button
           type="submit"
-          className="w-full py-3 bg-[#A656A6] text-white rounded-lg font-semibold hover:bg-[#823C82] transition"
+          disabled={loading}
+          className={`w-full py-3 rounded-lg font-semibold text-white transition ${
+            loading ? 'bg-purple-300 cursor-not-allowed' : 'bg-[#A656A6] hover:bg-[#823C82]'
+          }`}
         >
-          Submit Order
+          {loading ? 'Placing Order...' : 'Submit Order'}
         </button>
       </form>
     </div>

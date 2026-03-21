@@ -19,6 +19,19 @@ export function CartProvider({ children }) {
     })
   }
 
+  // Update quantity — removes item if quantity drops to 0
+  const updateQuantity = (productId, newQuantity) => {
+    if (newQuantity <= 0) {
+      setCartItems(prev => prev.filter(p => p.productId !== productId))
+    } else {
+      setCartItems(prev =>
+        prev.map(p =>
+          p.productId === productId ? { ...p, quantity: newQuantity } : p
+        )
+      )
+    }
+  }
+
   const removeFromCart = (id) => {
     setCartItems(prev => prev.filter(p => p.productId !== id))
   }
@@ -30,7 +43,7 @@ export function CartProvider({ children }) {
   }
 
   return (
-    <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, clearCart, getCartTotal }}>
+    <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, updateQuantity, clearCart, getCartTotal }}>
       {children}
     </CartContext.Provider>
   )

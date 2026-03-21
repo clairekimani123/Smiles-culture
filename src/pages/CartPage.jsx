@@ -3,7 +3,7 @@ import { useCart } from '../context/CartContext'
 import { Link } from 'react-router-dom'
 
 export default function CartPage() {
-  const { cartItems, removeFromCart } = useCart()
+  const { cartItems, removeFromCart, updateQuantity } = useCart()
   const total = cartItems.reduce((sum, i) => sum + i.price * i.quantity, 0)
 
   if (cartItems.length === 0) {
@@ -33,14 +33,43 @@ export default function CartPage() {
               className="w-full h-150 object-cover"
             />
             <div className="p-4">
-              <h3 className="font-semibold text-lg text-gray-800">{item.name}</h3>
+              {/* Clickable name → product detail */}
+              <Link
+                to={`/products/${item.productId}`}
+                className="font-semibold text-lg text-gray-800 hover:text-[#A656A6] hover:underline transition"
+              >
+                {item.name}
+              </Link>
+
               <p className="text-gray-600 text-sm mt-1">{item.description || ''}</p>
+
               <p className="text-[#A656A6] font-bold mt-2">
-                KES {item.price} × {item.quantity}
+                KES {(item.price * item.quantity).toFixed(2)}
               </p>
+              <p className="text-gray-500 text-xs">KES {item.price} each</p>
+
+              {/* Quantity controls */}
+              <div className="flex items-center gap-3 mt-3">
+                <button
+                  onClick={() => updateQuantity(item.productId, item.quantity - 1)}
+                  className="w-8 h-8 rounded-full border border-[#A656A6] text-[#A656A6] font-bold hover:bg-[#A656A6] hover:text-white transition"
+                >
+                  −
+                </button>
+                <span className="font-semibold text-gray-800 w-4 text-center">
+                  {item.quantity}
+                </span>
+                <button
+                  onClick={() => updateQuantity(item.productId, item.quantity + 1)}
+                  className="w-8 h-8 rounded-full border border-[#A656A6] text-[#A656A6] font-bold hover:bg-[#A656A6] hover:text-white transition"
+                >
+                  +
+                </button>
+              </div>
+
               <button
                 onClick={() => removeFromCart(item.productId)}
-                className="mt-3 text-red-600 hover:text-red-800 font-medium"
+                className="mt-3 text-red-600 hover:text-red-800 font-medium text-sm"
               >
                 Remove
               </button>
@@ -49,7 +78,7 @@ export default function CartPage() {
         ))}
       </div>
 
-      {/* Total and Checkout Button */}
+      {/* Total and Checkout */}
       <div className="mt-10 flex flex-col md:flex-row justify-between items-center gap-4">
         <p className="text-xl font-bold text-gray-800">
           Total: <span className="text-[#A656A6]">KES {total.toFixed(2)}</span>
