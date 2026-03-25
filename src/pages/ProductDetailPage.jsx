@@ -3,18 +3,60 @@ import { useParams, useNavigate } from 'react-router-dom'
 import api from '../utils/axios'
 import { useCart } from '../context/CartContext'
 
+// Skeleton shown while single product is loading
+function SkeletonDetail() {
+  return (
+    <div className="container mx-auto px-4 py-8 animate-pulse">
+      <div className="grid md:grid-cols-2 gap-8">
+        {/* Image placeholder */}
+        <div className="w-full h-96 bg-gray-200 rounded shadow" />
+
+        <div className="flex flex-col gap-4">
+          {/* Name */}
+          <div className="h-8 bg-gray-200 rounded w-3/4" />
+          {/* Price */}
+          <div className="h-6 bg-gray-200 rounded w-1/3" />
+          {/* Description lines */}
+          <div className="h-4 bg-gray-200 rounded w-full" />
+          <div className="h-4 bg-gray-200 rounded w-5/6" />
+          <div className="h-4 bg-gray-200 rounded w-4/6" />
+          {/* Stock badge */}
+          <div className="h-6 bg-gray-200 rounded w-20" />
+          {/* Buttons */}
+          <div className="flex gap-4 mt-4">
+            <div className="h-12 bg-gray-200 rounded-lg w-36" />
+            <div className="h-12 bg-gray-200 rounded-lg w-36" />
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function ProductDetailPage() {
   const { id } = useParams()
   const navigate = useNavigate()
   const [product, setProduct] = useState(null)
+  const [loading, setLoading] = useState(true)
   const [quantity, setQuantity] = useState(1)
   const { addToCart } = useCart()
 
   useEffect(() => {
-    api.get(`products/${id}/`).then(r => setProduct(r.data)).catch(console.error)
+    api.get(`products/${id}/`)
+      .then(r => setProduct(r.data))
+      .catch(console.error)
+      .finally(() => setLoading(false))
   }, [id])
 
-  if (!product) return <div className="p-8">Loading...</div>
+  // Show skeleton while loading
+  if (loading) return <SkeletonDetail />
+
+  // Product not found
+  if (!product) return (
+    <div className="p-8 text-center text-gray-500 font-medium">
+      Product not found.
+    </div>
+  )
 
   const inStock = product.stock === undefined || product.stock === null || product.stock > 0
 
