@@ -1,40 +1,71 @@
-import React, { useState } from 'react'
-import { useCart } from '../context/CartContext'
-import { useNavigate } from 'react-router-dom'
-import api from '../utils/axios'
-import { FaCcPaypal, FaCreditCard, FaMobileAlt } from 'react-icons/fa'
+import React, { useState } from 'react';
+import { useCart } from '../context/CartContext';
+import { useNavigate } from 'react-router-dom';
+import api from '../utils/axios';
+import { FaCcPaypal, FaCreditCard, FaMobileAlt } from 'react-icons/fa';
+import toast from 'react-hot-toast';
 
 export default function CheckoutPage() {
-  const { cartItems, clearCart } = useCart()
-  const navigate = useNavigate()
-  const [form, setForm] = useState({ name: '', phone: '', area: '', payment: 'mpesa' })
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-  const total = cartItems.reduce((s, i) => s + i.price * i.quantity, 0)
+  const { cartItems, clearCart } = useCart();
+  const navigate = useNavigate();
+  
+  const [form, setForm] = useState({ 
+    name: '', 
+    phone: '', 
+    area: '', 
+    payment: 'mpesa' 
+  });
+  
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const total = cartItems.reduce((s, i) => s + i.price * i.quantity, 0);
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value })
+  const handleChange = (e) => 
+    setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setLoading(true)
-    setError('')
+    e.preventDefault();
+    setLoading(true);
+    setError('');
 
     try {
-      await api.post('checkout/', { ...form, amount: total, items: cartItems })
+      // Simulate M-Pesa prompt for better UX (you can improve this later with real STK Push)
+      if (form.payment === 'mpesa') {
+        toast.loading('Sending M-Pesa prompt to your phone...', {
+          id: 'mpesa-toast',
+          duration: Infinity,
+        });
 
-      // ✅ Clear the cart
-      clearCart()
+        // Call your backend
+        await api.post('checkout/', { 
+          ...form, 
+          amount: total, 
+          items: cartItems 
+        });
 
-      // ✅ Navigate to home with a success message via state
-      navigate('/', { state: { orderSuccess: true } })
+        toast.success('Prompt sent! Please check your phone and enter your M-Pesa PIN.', {
+          id: 'mpesa-toast',
+          duration: 8000,
+        });
+      } else {
+        await api.post('checkout/', { 
+          ...form, 
+          amount: total, 
+          items: cartItems 
+        });
+      }
+
+      clearCart();
+      navigate('/', { state: { orderSuccess: true } });
 
     } catch (err) {
-      console.error(err)
-      setError('Checkout failed. Please check your details and try again.')
+      console.error(err);
+      setError('Checkout failed. Please check your details and try again.');
+      toast.error('Payment initiation failed. Please try again.');
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="w-full max-w-2xl mx-auto px-6 py-10">
@@ -42,11 +73,9 @@ export default function CheckoutPage() {
         Checkout
       </h2>
 
-      <form
-        onSubmit={handleSubmit}
-        className="space-y-6 bg-white shadow-lg rounded-xl p-8 border border-purple-200"
-      >
-        {/* Full Name */}
+      <form onSubmit={handleSubmit} className="space-y-6 bg-white shadow-lg rounded-xl p-8 border border-purple-200">
+        {/* ... (Name, Phone, Area fields remain the same) ... */}
+
         <div>
           <label className="block text-gray-700 mb-2 font-semibold">Full Name</label>
           <input
@@ -60,7 +89,6 @@ export default function CheckoutPage() {
           />
         </div>
 
-        {/* Phone */}
         <div>
           <label className="block text-gray-700 mb-2 font-semibold">Phone Number</label>
           <input
@@ -74,7 +102,6 @@ export default function CheckoutPage() {
           />
         </div>
 
-        {/* Area */}
         <div>
           <label className="block text-gray-700 mb-2 font-semibold">Area / Location</label>
           <input
@@ -88,7 +115,7 @@ export default function CheckoutPage() {
           />
         </div>
 
-        {/* Payment Method */}
+        {/* Payment Method Section (unchanged) */}
         <div>
           <label className="block text-gray-700 mb-2 font-semibold">Payment Method</label>
           <select
@@ -102,7 +129,6 @@ export default function CheckoutPage() {
             <option value="paypal">PayPal</option>
           </select>
 
-          {/* Payment Icons */}
           <div className="flex justify-center items-center gap-10 mt-4 text-[#A656A6]">
             <div className={`flex flex-col items-center transition ${form.payment === 'mpesa' ? 'opacity-100 scale-110' : 'opacity-40'}`}>
               <FaMobileAlt size={40} />
@@ -119,17 +145,14 @@ export default function CheckoutPage() {
           </div>
         </div>
 
-        {/* Total */}
         <p className="font-bold text-lg text-gray-700 text-center">
           Total: <span className="text-[#A656A6]">KES {total.toFixed(2)}</span>
         </p>
 
-        {/* Error message */}
         {error && (
           <p className="text-red-600 text-center text-sm font-medium">{error}</p>
         )}
 
-        {/* Submit */}
         <button
           type="submit"
           disabled={loading}
@@ -137,9 +160,9 @@ export default function CheckoutPage() {
             loading ? 'bg-purple-300 cursor-not-allowed' : 'bg-[#A656A6] hover:bg-[#823C82]'
           }`}
         >
-          {loading ? 'Placing Order...' : 'Submit Order'}
+          {loading ? 'Processing Payment...' : 'Submit Order'}
         </button>
       </form>
     </div>
-  )
+  );
 }
