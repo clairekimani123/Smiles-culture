@@ -1,12 +1,81 @@
-# React + Vite
+# Smiles Culture — Storefront
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Customer-facing storefront for **Smiles Culture**, a made-to-order fashion brand
+based in Kenya. Browse the collection, add items to your cart, and check out with
+**MPesa STK Push**. Made-to-order pieces trigger a deposit request so our designer
+can purchase materials before crafting begins.
 
-Currently, two official plugins are available:
+**Live:** https://smiles-culture.vercel.app
+**API:** https://github.com/clairekimani123/Smiles-culture-backend
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## Expanding the ESLint configuration
+## Why this project exists
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Smiles Culture sells both ready-to-wear and made-to-order pieces. Off-the-shelf
+e-commerce can't handle the made-to-order flow, so this storefront integrates
+directly with the designer's production pipeline — including **deposit collection
+before crafting begins** when items aren't in stock.
+
+## Features
+
+- 🛍️ Product catalog with categories and search
+- 🛒 Persistent cart (survives refresh; merges across devices on login)
+- 💳 MPesa STK Push checkout (Daraja API)
+- 👗 Made-to-order workflow — customer pays deposit, designer sets a timeframe
+- 📦 Order status tracking (`pending → paid → in_production → shipped → delivered`)
+- 📊 GA4 e-commerce events (`view_item`, `add_to_cart`, `begin_checkout`, `purchase`)
+
+## Tech stack
+
+| Layer      | Tool                                          |
+|------------|-----------------------------------------------|
+| Framework  | React 18 + Vite                               |
+| Styling    | [Tailwind / CSS Modules — fill in]            |
+| State      | Context API + localStorage                    |
+| Payments   | MPesa Daraja (via backend)                    |
+| Analytics  | Google Analytics 4 (`react-ga4`)              |
+| Hosting    | Vercel                                        |
+| Errors     | Sentry                                        |
+
+## Architecture
+
+┌──────────────────┐ HTTPS ┌────────────────────┐ Daraja ┌────────────┐
+│ React (Vercel) │ ──────────► │ Django API (Render)│ ─────────► │ Safaricom │
+└──────────────────┘ REST/JSON └────────────────────┘ STK Push └────────────┘
+│ │
+▼ ▼
+localStorage PostgreSQL
+(cart cache) (orders, stock)
+
+text
+
+## Running locally
+
+```bash
+# 1. Clone
+git clone https://github.com/clairekimani123/Smiles-culture.git
+cd Smiles-culture
+
+# 2. Install
+npm install
+
+# 3. Configure
+cp .env.example .env
+# Edit .env — point VITE_API_URL at your local backend
+
+# 4. Run
+npm run dev
+Open http://localhost:5173. Backend must be running (see backend README).
+
+Deployment
+Push to main → Vercel auto-deploys. Set VITE_API_URL and VITE_GA4_ID in
+Vercel → Project → Settings → Environment Variables.
+
+Roadmap
+□ Product variants (size / color) with per-variant stock
+□ Order history page for returning customers
+□ Reviews with verified-purchase badges
+□ Playwright end-to-end test for the checkout flow
+Author
+Claire Kimani — GitHub
