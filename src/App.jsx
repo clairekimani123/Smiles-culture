@@ -7,6 +7,8 @@ import ProductListPage from './pages/ProductListPage';
 import ProductDetailPage from './pages/ProductDetailPage';
 import CartPage from './pages/CartPage';
 import CheckoutPage from './pages/CheckoutPage';
+import OrderDetailPage from './pages/OrderDetailPage';
+import PayOrderPage from './pages/PayOrderPage';
 import { CartProvider } from './context/CartContext';
 import { Toaster } from 'react-hot-toast';
 
@@ -39,6 +41,8 @@ export default function App() {
             <Route path="/products/:id" element={<ProductDetailPage />} />
             <Route path="/cart" element={<CartPage />} />
             <Route path="/checkout" element={<CheckoutPage />} />
+            <Route path="/orders/:id" element={<OrderDetailPage />} />
+            <Route path="/orders/:id/pay" element={<PayOrderPage />} />
           </Routes>
         </main>
 
